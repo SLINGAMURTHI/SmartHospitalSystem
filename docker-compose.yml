@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # 1. Relational Database Layer (MySQL)
+  mysql-db:
+    image: mysql:8.0
+    container_name: hospital-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: hospital_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  # 2. In-Memory Cache Layer (Redis)
+  redis-cache:
+    image: redis:7.0-alpine
+    container_name: hospital-redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # 3. Backend Application REST API (Spring Boot)
+  hospital-backend:
+    build: .
+    container_name: hospital-backend-app
+    restart: always
+    ports:
+      - "8088:8088"
+    depends_on:
+      - mysql-db
+      - redis-cache
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/hospital_db?createDatabaseIfNotExist=true
+      - SPRING_DATA_REDIS_HOST=redis-cache
+
+volumes:
+  mysql-data:

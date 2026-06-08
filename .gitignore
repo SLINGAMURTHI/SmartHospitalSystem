@@ -1,0 +1,17 @@
+# Target build folders
+target/
+.gradle/
+build/
+
+# IDE specific files
+.settings/
+.project
+.classpath
+.factorypath
+.vscode/
+.idea/
+*.iml
+
+# System files
+Thumbs.db
+.DS_Store
