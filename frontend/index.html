@@ -3,126 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarePlus Hospital Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>CarePlus - Patient Appointment Portal</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 min-h-screen font-sans">
-
-    <nav class="bg-blue-600 text-white shadow-md p-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wide">🏥 CarePlus Smart Hospital</h1>
-<button onclick="window.open('http://localhost:8088/actuator/health', '_blank')" 
-        class="bg-blue-500 hover:bg-blue-400 active:scale-95 transition-all px-3 py-1 rounded text-sm font-semibold cursor-pointer select-none">
-    🟢 Docker Live Engine
-</button>        </div>
-    </nav>
-
-    <main class="max-w-6xl mx-auto p-6 mt-6">
-        
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-100 mb-8">
-            <h2 class="text-xl font-bold text-slate-800">Available Appointment Slots</h2>
-            <p class="text-slate-500 text-sm mt-1">Select a specialist below to book your instant medical checkup consultation slot. Powered by Redis Caching.</p>
-        </div>
-
-        <div id="slots-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="col-span-full text-center text-slate-500 py-12 font-medium">
-                ⏳ Fetching dynamic schedules from the microservice network...
-            </div>
-        </div>
-    </main>
-
-    <div id="booking-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
-            <h3 class="text-lg font-bold text-slate-800 mb-2">Confirm Your Booking</h3>
-            <p id="modal-doctor-details" class="text-sm text-slate-600 mb-4"></p>
-            
-            <input type="hidden" id="modal-schedule-id">
-            <div class="mb-4">
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Your Email Address</label>
-                <input type="email" id="patient-email" placeholder="name@example.com" class="w-full border border-slate-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-
-            <div class="flex justify-end gap-3">
-                <button onclick="closeModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 font-medium">Cancel</button>
-                <button onclick="submitBooking()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow font-medium">Confirm Slot</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const API_BASE = "http://localhost:8088/api/patient";
-
-        // Fetch dynamic schedules automatically on load
-        async function loadSchedules() {
-            const grid = document.getElementById("slots-grid");
-            try {
-                const response = await fetch(`${API_BASE}/schedules`);
-                const slots = await response.json();
-                
-                if (slots.length === 0) {
-                    grid.innerHTML = `<div class="col-span-full text-center text-slate-400 py-12">🎉 All appointment slots have been successfully booked! Check the booked registry tab.</div>`;
-                    return;
-                }
-
-                grid.innerHTML = slots.map(slot => `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col justify-between transition hover:shadow-md">
-                        <div>
-                            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wider">Available Slot</span>
-                            <h3 class="text-lg font-bold text-slate-800 mt-3">${slot.doctorName}</h3>
-                            <p class="text-slate-500 text-sm flex items-center gap-1.5 mt-1">
-                                🕒 ${slot.availableTime}
-                            </p>
-                        </div>
-                        <button onclick="openBookingModal(${slot.id}, '${slot.doctorName}', '${slot.availableTime}')" class="w-full mt-5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium py-2.5 rounded-lg transition shadow-sm">
-                            Book Appointment
-                        </button>
+<body>
+    <div class="container">
+        <header>
+            <h1>CarePlus Hospital</h1>
+            <p>Smart Patient Appointment & Scheduling Portal</p>
+        </header>
+        <main>
+            <section class="card">
+                <div class="card-header">
+                    <h2>Available Doctor Schedules</h2>
+                    <button id="btnLoadSchedules" class="btn btn-primary">🔄 Load Schedules</button>
+                    <button id="btnResetSchedules" class="btn btn-danger ms-2">⚠️ Reset All Slots</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>Doctor Name</th>
+                                <th>Available Time Window</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedulesBody">
+                            <tr>
+                                <td colspan="4" class="text-center">No schedules loaded yet. Click 'Load Schedules'.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="card booking-card">
+                <h2>Book Your Appointment Slot</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="scheduleId">Doctor Slot ID:</label>
+                        <input type="number" id="scheduleId" placeholder="e.g., 1" min="1" required>  
                     </div>
-                `).join('');
-            } catch (error) {
-                grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-12 font-medium">❌ Unable to connect to your Spring Boot Docker container. Make sure the container engine is running!</div>`;
-            }
-        }
+                    <div class="form-group">
+                        <label for="patientEmail">Your Email Address:</label>
+    <input type="email" id="patientEmail" placeholder="e.g., patient@gmail.com" required>                    </div>
+                    <button type="submit" class="btn-success">Confirm Secure Booking</button>
+                </form>
+            <div id="messageBox" class="message-box hidden"></div>
+        </section>
 
-        function openBookingModal(id, doctor, time) {
-            document.getElementById("modal-schedule-id").value = id;
-            document.getElementById("modal-doctor-details").innerText = `Requesting consultation with ${doctor} for the ${time} session window.`;
-            document.getElementById("booking-modal").classList.remove("hidden");
-        }
+        <div class="container mt-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="card-title h4 mb-4 text-secondary d-flex align-middle gap-2">
+                        📋 Doctor's Master Schedule (Booked Appointments)
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Slot ID</th>
+                                    <th>Doctor Name</th>
+                                    <th>Time Window</th>
+                                    <th>Patient Email</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookedSchedulesBody">
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">No appointments booked yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        function closeModal() {
-            document.getElementById("booking-modal").classList.add("hidden");
-            document.getElementById("patient-email").value = "";
-        }
-
-        async function submitBooking() {
-            const id = document.getElementById("modal-schedule-id").value;
-            const email = document.getElementById("patient-email").value;
-
-            if (!email) {
-                alert("Please provide a valid email address!");
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/book?scheduleId=${id}&email=${encodeURIComponent(email)}`, {
-                    method: 'POST'
-                });
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert(`Success: ${data.message}`);
-                    closeModal();
-                    loadSchedules(); // Reload grid immediately using the reactive Redis flow!
-                } else {
-                    alert(`Error: ${data.message}`);
-                }
-            } catch (error) {
-                alert("Failed to compile target transaction response. Connection refused.");
-            }
-        }
-
-        // Run bootstrap on application entry
-        loadSchedules();
-    </script>
+    </main>
+</div>
+<script src="app.js"></script>
 </body>
 </html>
