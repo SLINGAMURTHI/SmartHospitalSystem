@@ -1,24 +1,41 @@
-# 🏥 SmartHospitalSystem: Full-Stack Enterprise Portal
+# CarePlus Hospital - Smart Patient Appointment Booking Portal
 
-An automated, modern, full-stack Hospital Management System designed to handle concurrent patient appointment scheduling with high-performance architectures. 
+CarePlus is a high-performance, full-stack hospital management web application designed to streamline doctor schedule tracking and patient appointment bookings. The platform features an automated scheduling engine, client-side real-time data filters, live analytical metric tracking, and multi-tier business validation logic.
 
-## 🏗️ System Architecture & Tech Stack
-* **Frontend:** Single Page Application (SPA) built using HTML5, modern Tailwind CSS, and asynchronous JavaScript (Fetch API).
-* **Backend Framework:** Java 17 / Spring Boot with Spring Security, Spring Data JPA, and Hibernate ORM.
-* **In-Memory Cache Layer:** Redis 7.0 for low-latency database offloading using the Cache-Aside pattern.
-* **Relational Database:** MySQL 8.0 handling persistent storage records.
-* **Container Orchestration:** Multi-container runtime isolation managed via Docker & Docker Compose.
+## 🚀 Key Features
 
-## 🚀 Key Engineering Features
-* **Cache-Aside & Eviction Strategy:** Read requests query the Redis container memory layer first. Upon scheduling a slot via a `POST` request, custom cache eviction mechanisms (`@CacheEvict`) automatically purge stale entries to guarantee data consistency.
-* **Concurrency Race-Condition Protections:** Leverages synchronized transaction boundaries to eliminate double-booking or over-scheduling anomalies during simultaneous peak user traffic.
-* **Isolated Networking Mesh:** Services are containerized and connected over an isolated Docker network bridge, redirecting external host collision conflicts seamlessly.
+* **Smart Patient Booking Frontend:** Clean, highly interactive portal featuring responsive controls, dynamic processing state feedback, and input sanitation.
+* **Real-Time Data Filtering Grid:** High-performance, client-side filtering engine on both the Patient Portal and Admin Dashboard for instant lookup across names, emails, and medical specialties.
+* **Enterprise Business Constraint Engine:** Bulletproof backend validation rules matching slot assignments to appropriate medical specialties (e.g., Oncologists, Cardiologists, Neurologists).
+* **Live Aggregated Metrics Badge:** Live data state analysis tracking system loads and highlighting active booked records on an interactive tracking pill badge.
+* **Production-Ready Containerization:** Fully containerized setup leveraging multi-stage Docker configurations for streamlined deployment.
 
-## 🛠️ How to Run Locally
+---
 
-1. Clone the repository:
-```bash
-git clone [https://github.com/SLINGAMURTHI/SmartHospitalSystem.git](https://github.com/SLINGAMURTHI/SmartHospitalSystem.git)
-cd SmartHospitalSystem
+## 🛠️ Technical Architecture & Stack
 
-docker-compose up --build
+### Frontend Layer
+* **HTML5 / CSS3:** Premium, custom component styles tailored with clean letter-spacing, semantic cards, and responsive data tables.
+* **JavaScript (ES6+):** Pure asynchronous AJAX execution mapping state handling, handling race conditions, and real-time DOM filtering manipulation.
+
+### Backend Layer
+* **Java 17 (LTS) & Spring Boot:** High-throughput REST API controller patterns utilizing Spring Web routing.
+* **Spring Data JPA / Hibernate:** Relational persistence framework abstraction handles ORM mapping and safe object mutations.
+* **MySQL:** Reliable ACID-compliant relational data schema maps persistent schedule and booking states.
+
+---
+
+## 🏗️ Backend System Business Logic Blueprint
+
+The core scheduling engine implements transactional state lock structures (`synchronized`) inside `AppointmentService.java` to avoid booking collisions, alongside strict categorical validation constraints:
+
+```java
+if (doctorName.contains("Ramesh Kumar") || doctorName.contains("Rajesh Joshi")) {
+    if (!"Cancer".equalsIgnoreCase(illness)) {
+        throw new IllegalArgumentException("Specialty Mismatch: Oncologists only accept Cancer Consultations.");
+    }
+} else if (doctorName.contains("Vikram Malhotra")) {
+    if (!"Brain Injury / Nerve Pain".equalsIgnoreCase(illness)) {
+        throw new IllegalArgumentException("Specialty Mismatch: Neurologists only accept Brain Specialist consultations.");
+    }
+}
