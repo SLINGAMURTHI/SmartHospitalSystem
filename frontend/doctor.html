@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarePlus - Doctor Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CarePlus Administration</h1>
+            <p>Doctor Master Schedule & Appointment Management Control</p>
+            <div style="margin-top: 15px;">
+                <a href="index.html" class="btn btn-primary" style="text-decoration: none; display: inline-block;">👈 Return to Patient Booking Portal</a>
+            </div>
+        </header>
+        <main>
+            <section class="card shadow-sm border-0">
+                <div class="card-header">
+                    <h2>📄 Doctor's Master Schedule (Booked Appointments) <span id="totalBookingsBadge" style="background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-left: 10px; display: inline-block; vertical-align: middle;">Total Bookings: 0</span>
+                    </h2>
+                    <!-- 🔍 Real-Time Admin Search Filter Component -->
+                        <div style="margin-bottom: 20px; margin-top: 15px;">
+                            <label for="adminSearchInput">🔍 Search Patients, Doctors, or Conditions:</label>
+                            <input type="text" id="adminSearchInput" placeholder="Type patient email, doctor name, or illness (e.g., murthy, Amit, Fever)..." onkeyup="filterAdminBookings()">
+                        </div>
+                    <button id="btnResetSchedules" class="btn btn-danger">⚠️ Reset All System Records</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Slot ID</th>
+                                <th>Doctor Name</th>
+                                <th>Time Window</th>
+                                <th>Patient Email Details</th>
+                                <th>Patient Illness</th> </tr>
+                        </thead>
+                        <tbody id="bookedSchedulesBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">Loading master schedules...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+   <div style="display: none;">
+        <select id="patientIllness"><option value=""></option></select>
+        <button id="btnLoadSchedules"></button>
+        <form id="bookingForm"><input id="scheduleId"><input id="patientEmail"></form>
+        <div id="messageBox"></div>
+        <tbody id="schedulesBody"></tbody>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

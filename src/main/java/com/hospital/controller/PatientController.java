@@ -30,12 +30,19 @@ public class PatientController {
 
     @PostMapping("/book")
     public ResponseEntity<ApiResponse> bookAppointment(
-        @RequestParam @jakarta.validation.constraints.Min(value = 1, message = "Invalid Slot ID format") Long scheduleId,
-        @RequestParam @jakarta.validation.constraints.Email(message = "Invalid email address format") String email) {
-        
-        // No try-catch blocks needed! If this throws an error, our Global Handler catches it.
-        String message = appointmentService.bookAppointment(scheduleId, email);
-        return ResponseEntity.ok(new ApiResponse(message, true));
+            @RequestParam Long scheduleId,
+            @RequestParam String email,
+            @RequestParam String illness
+    ) {
+        try {
+            String message = appointmentService.bookAppointment(scheduleId, email, illness);
+            return ResponseEntity.ok(new ApiResponse(message, true));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // 🌟 Catches our specific restriction messages and passes them gracefully down to frontend
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), false));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse("An unexpected error occurred.", false));
+        }
     }
 
     @PutMapping("/reset")

@@ -18,8 +18,11 @@ public class HospitalApplication {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
-			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); 
-		return http.build();
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> cors.configure(http)) 
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        .httpBasic(org.springframework.security.config.Customizer.withDefaults());
+    
+    return http.build(); // 🌟 ADD THIS EXACT LINE HERE!
 	}
 }

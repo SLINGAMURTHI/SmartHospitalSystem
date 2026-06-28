@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarePlus - Patient Appointment Portal</title>
+    <title>CarePlus - Patient Portal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>CarePlus Hospital</h1>
-            <p>Smart Patient Appointment & Scheduling Portal</p>
+            <p>Smart Patient Appointment Booking Portal</p>
+            <div style="margin-top: 15px;">
+                <a href="doctor.html" class="btn btn-primary" style="text-decoration: none; display: inline-block;">👉 Switch to Doctor Dashboard</a>
+            </div>
         </header>
+        
         <main>
             <section class="card">
                 <div class="card-header">
                     <h2>Available Doctor Schedules</h2>
-                    <button id="btnLoadSchedules" class="btn btn-primary">🔄 Load Schedules</button>
-                    <button id="btnResetSchedules" class="btn btn-danger ms-2">⚠️ Reset All Slots</button>
+                    <button id="btnLoadSchedules" class="btn btn-primary">🔄 Refresh Slots</button>
+                </div>
+                <!-- 🔍 Real-Time Search & Filter Component -->
+                <div style="margin-bottom: 20px;">
+                    <label for="doctorSearchInput">🔍 Fast Search Doctor or Specialty:</label>
+                    <input type="text" id="doctorSearchInput" placeholder="Type doctor name, specialty, or condition (e.g., Sneha, Oncologist, Cold)..." onkeyup="filterDoctorSchedules()">
                 </div>
                 <div class="table-container">
                     <table>
@@ -31,12 +39,13 @@
                         </thead>
                         <tbody id="schedulesBody">
                             <tr>
-                                <td colspan="4" class="text-center">No schedules loaded yet. Click 'Load Schedules'.</td>
+                                <td colspan="4" class="text-center">Loading available slots...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
+
             <section class="card booking-card">
                 <h2>Book Your Appointment Slot</h2>
                 <form id="bookingForm">
@@ -44,43 +53,44 @@
                         <label for="scheduleId">Doctor Slot ID:</label>
                         <input type="number" id="scheduleId" placeholder="e.g., 1" min="1" required>  
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="illnessSelect">Select Your Illness / Category:</label>
+                        <select id="illnessSelect" required>
+                            <option value="" disabled selected>-- Choose your condition --</option>
+                            
+                            <!-- Slots 2 & 7: Dr. Sneha Sharma & Dr. Ananya Reddy -->
+                            <option value="Fever">Fever (General Medicine)</option>
+                            <option value="Common Cold">Common Cold / Flu</option>
+                            
+                            <!-- Slots 1 & 8: Dr. Ramesh Kumar & Dr. Rajesh Joshi -->
+                            <option value="Cancer">Cancer Consultation (Oncology)</option>
+                            
+                            <!-- Slot 3: Dr. Ramcar Kumar -->
+                            <option value="Kids Fever">Kids Fever / Cold (Pediatrics)</option>
+                            
+                            <!-- Slot 4: Dr. Amit Mishra -->
+                            <option value="Heart Checkup">Heart Specialist (Cardiology)</option>
+                            
+                            <!-- Slot 5: Dr. Priya Patel -->
+                            <option value="Skin Rash">Skin Specialist (Dermatology)</option>
+                            
+                            <!-- Slot 6: Dr. Vikram Malhotra -->
+                            <option value="Brain Injury / Nerve Pain">Brain Specialist (Neurology)</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="patientEmail">Your Email Address:</label>
-    <input type="email" id="patientEmail" placeholder="e.g., patient@gmail.com" required>                    </div>
+                        <input type="email" id="patientEmail" placeholder="e.g., patient@gmail.com" required>
+                    </div>
                     <button type="submit" class="btn-success">Confirm Secure Booking</button>
                 </form>
-            <div id="messageBox" class="message-box hidden"></div>
-        </section>
-
-        <div class="container mt-5">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h2 class="card-title h4 mb-4 text-secondary d-flex align-middle gap-2">
-                        📋 Doctor's Master Schedule (Booked Appointments)
-                    </h2>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Slot ID</th>
-                                    <th>Doctor Name</th>
-                                    <th>Time Window</th>
-                                    <th>Patient Email</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookedSchedulesBody">
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-3">No appointments booked yet.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-</div>
-<script src="app.js"></script>
+                
+                <div id="messageBox" class="message-box hidden"></div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>

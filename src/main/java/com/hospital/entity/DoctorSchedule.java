@@ -24,23 +24,38 @@ public class DoctorSchedule implements Serializable {
     @Column(name = "patient_email")
     private String patientEmail;
     
+    @Column(name = "patient_illness")
+    private String patientIllness;
+    
+    // Default Constructor
     public DoctorSchedule() {}
 
+    // Parameterized Constructor
     public DoctorSchedule(Long id, String doctorName, String availableTime, boolean isBooked) {
         this.id = id;
         this.doctorName = doctorName;
         this.availableTime = availableTime;
         this.isBooked = isBooked;
     }
-    public String getPatientEmail() { return patientEmail; }
-    public void setPatientEmail(String patientEmail) { this.patientEmail = patientEmail; }
+    
+    // --- GETTERS AND SETTERS ---
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getDoctorName() { return doctorName; }
     public void setDoctorName(String doctorName) { this.doctorName = doctorName; }
+
     public String getAvailableTime() { return availableTime; }
     public void setAvailableTime(String availableTime) { this.availableTime = availableTime; }
+
     public boolean isBooked() { return isBooked; }
-    public void setBooked(boolean booked) { isBooked = booked; }
+    public void setBooked(boolean booked) { this.isBooked = booked; }
+
+    public String getPatientEmail() { return patientEmail; }
+    public void setPatientEmail(String patientEmail) { this.patientEmail = patientEmail; }
+
+    // 🌟 Newly integrated illness fields mapping methods
+    public String getPatientIllness() { return patientIllness; }
+    public void setPatientIllness(String patientIllness) { this.patientIllness = patientIllness; }
 }
